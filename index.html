@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="style.css" type="text/css" />
+        
+        <title>Ponyvile</title>
+    </head>
+    <body onload="NewAction();">
+
+        <div ondrop="drop(event)" id="plane" ondragover="allowDrop(event)" style="background-color: red; width: 100%; height: 1000px;">
+        
+            <div class="pony" id="sunsetShimmer" style="top: 0px; left: 0px;"> 
+                <table><tr><td><img id="sunsetShimmerSprite" src="images/sunsetShimmer_idle.gif" alt="sunsetShimmer"  onclick="Teleport();" draggable="true" ondragstart="drag(event)"></td></tr></table>
+            </div>
+        </div>
+  
+        <script>
+               function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+
+        function drop(ev) 
+            {
+                ev.preventDefault();
+         
+             
+                var x = ev.clientX;
+                var y = ev.clientY;
+                sunsetShimmer.style.left = x - 100+ "px";
+                sunsetShimmer.style.top = y - 100+ "px";
+           console.log(x,y);
+            }
+            var sunsetShimmer = document.getElementById("sunsetShimmer");
+            var sunsetShimmerSprite = document.getElementById("sunsetShimmerSprite");
+            var sunsetShimmerSprites = ["images/sunsetShimmer_idle.gif","images/sunsetShimmer_teleport.gif", "images/sunsetShimmer_walk.gif"];
+            var sunsetShimmerDestination = [0, 0];
+            var sunsetShimmerSpeed = 3;
+
+            var stop = false;
+
+            function PreMove()
+            {
+            
+                // End position...
+                var x = Math.round(Math.random() * 1000);
+                var y = Math.round(Math.random() * 1000);
+                
+                sunsetShimmerDestination = [x, y];
+                
+                
+                // Sprite...
+                sunsetShimmerSprite.src = sunsetShimmerSprites[2];
+                
+                // Time...
+                var dis = distance(sunsetShimmerDestination[0],sunsetShimmerDestination[1], parseInt(sunsetShimmer.style.top), parseInt(sunsetShimmer.style.top));
+                var time = Math.round(dis / sunsetShimmerSpeed);
+                
+
+                // DEBUG!!!
+                console.log("Time: " + time + ", Distance: " + dis);
+
+
+
+                Move(time * 2);
+            }
+         
+            function Move(steps)
+            {  
+               
+                if(stop)
+                    return;
+                
+               
+                // Position...
+                var x = parseInt(sunsetShimmer.style.left);
+                var y = parseInt(sunsetShimmer.style.top);
+               
+
+                if(distance(sunsetShimmerDestination[0],sunsetShimmerDestination[1],x, y) < 60)
+                {
+                        NewAction();
+                    return;
+                }
+
+           
+
+                var dir =  direction(sunsetShimmerDestination[0] - x, sunsetShimmerDestination[1]  - y);
+
+                if(sunsetShimmerDestination[0] - x < -25 | sunsetShimmerDestination[0] - x > 25) 
+                    sunsetShimmer.style.left = (x + sunsetShimmerSpeed * dir[0]) + "px";
+            
+                if(sunsetShimmerDestination[1] - y < -25 |  sunsetShimmerDestination[1] - y > 25) 
+                    sunsetShimmer.style.top = (y + sunsetShimmerSpeed * dir[1]) + "px";
+       
+                sunsetShimmerSprite.style.transform = "scaleX(" + dir[0] + ")";
+
+                // Loop...
+                setTimeout(function (){
+                    Move(steps);
+                }, 50);
+            }
+
+            function direction(x ,y)
+            {
+
+                return([x > 0 ? 1 : -1, y > 0 ? 1 : -1]);
+            }
+            function distance(startX, startY, endX, endY)
+            {
+
+                var dis = Math.sqrt((endX  - startX) * (endX  - startX) + (endY - startY) * (endY - startY));
+
+                return dis;
+            }
+            function Teleport()
+            {
+                
+                // Teleport animation && stop Sunset Shimmer...
+                sunsetShimmerSprite.src=sunsetShimmerSprites[1]; 
+                stop = true;
+
+
+                // Change position...
+                setTimeout( function(){ 
+                    sunsetShimmer.style.left = Math.round(Math.random() * 1000) + "px";
+                    sunsetShimmer.style.top = Math.round(Math.random() * 1000) + "px";
+                }, 2000);
+
+
+                // Change animation...
+                setTimeout( function(){ 
+                    stop = false;
+                    PreMove();
+                }, 6000);
+            }
+
+            function NewAction()
+            {
+
+                var random = Math.random() * 100;
+
+                if(random > 40)
+                {
+
+                    sunsetShimmerSprite.src = sunsetShimmerSprites[0];
+
+                    setTimeout(function (){
+                        stop = false;
+                        PreMove();
+                    }, random * 100);
+                }
+                else 
+                {
+
+                    stop = false;
+                    PreMove();
+                }
+            }
+        </script>
+    </body>
+</html>

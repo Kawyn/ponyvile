@@ -1,0 +1,24 @@
+html, body { 
+    margin: 0;
+    padding: 0;
+}
+
+.pony { 
+    left: 100px;
+    top: 100px; 
+    
+    width: 200px;
+    height: 200px;
+ 
+    position: absolute;
+}
+
+td, tr, table {
+    height:100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: middle;
+    text-align: center;
+}
