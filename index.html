@@ -27,6 +27,11 @@
             <table><tr><td><img src="images/flufflePuff_idle.gif" id="flufflePuffImg" draggable="true" ondragstart="drag(event, ponies[2])" onclick="FlufflePuff();"></td></tr></table>
         </div>
 
+         <!-- Princess Luna -->
+        <div id="princessLunaDiv" class="pony" style="top: 200px; left: 400px;"> 
+            <table><tr><td><img src="images/princessLuna_idle.gif" id="princessLunaImg" draggable="true" ondragstart="drag(event, ponies[3])"></td></tr></table>
+        </div>
+
         <script>
 
             // Ponies database...
@@ -60,7 +65,17 @@
                     animations: ["images/flufflePuff_idle.gif", "images/flufflePuff_trotting.gif", "images/flufflePuff_trotting.gif", "images/flufflePuff_gasping.gif", "images/flufflePuff_phbbt.gif"],
                     
                     action: 0
-                }                      
+                },
+                /* Princess Luna */ {
+                    name: "princessLuna", 
+                    div: document.getElementById("princessLunaDiv"),
+                    img: document.getElementById("princessLunaImg"), 
+                    
+                    destination: [0 ,0], 
+                    animations: ["images/princessLuna_idle.gif", "images/princessLuna_trotting.gif", "images/princessLuna_flying.gif"],
+                    
+                    action: 0
+                }                             
             ];
 
 
