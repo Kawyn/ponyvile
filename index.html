@@ -302,6 +302,22 @@
                     console.log("dada");
                     document.getElementById("playerDiv").style.left = (parseInt(document.getElementById("playerDiv").style.left) - 10) + "px";
                 }
+                    if(key.key == "d")
+                {  
+                    console.log("dada");
+                    document.getElementById("playerDiv").style.left = (parseInt(document.getElementById("playerDiv").style.left) + 10) + "px";
+                }
+                    if(key.key == "w")
+                {  
+                    console.log("dada");
+                    document.getElementById("playerDiv").style.top = (parseInt(document.getElementById("playerDiv").style.top) + 10) + "px";
+                }
+                    if(key.key == "s")
+                {  
+                    console.log("dada");
+                    document.getElementById("playerDiv").style.top = (parseInt(document.getElementById("playerDiv").style.top) - 10) + "px";
+                }
+                
             }
         </script>
         <input type="text" id="control" onkeypress="return PlayerControl(event)" />
