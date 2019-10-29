@@ -197,6 +197,7 @@
                 if(pony.destination[0] - x < -25 | pony.destination[0] - x > 25) 
                 {
                     var nor = Math.abs((pony.destination[0] - pony.div.style.left) / dis);
+                    console.log(nor, dis);
                     pony.div.style.left = (x + speed * dir[0] * nor)  + "px";
                 
                 }
@@ -289,15 +290,15 @@
                 
             }
             
-            function getKey(key)
+            function PlayerControl(key)
             {
                 console.log(key);
-                if(key.keyCode == 13)
+                if(key.key == "a")
                 {  
-          
+                    console.log("działa");
                 }
             }
         </script>
-        <input type="text" id="control" onkeypress="return getKey(event)" />
+        <input type="text" id="control" onkeypress="return PlayerControl(event)" />
     </body>
 </html>
