@@ -202,7 +202,6 @@
                 if(pony.destination[0] - x < -25 | pony.destination[0] - x > 25) 
                 {
                     var nor = Math.abs((pony.destination[0] - x) / dis);
-                    console.log(nor, dis);
                     pony.div.style.left = (x + speed * dir[0] * nor)  + "px";
                 
                 }
@@ -210,7 +209,6 @@
                 {
                     var nor = Math.abs((pony.destination[1] - y) / dis);   
                     pony.div.style.top = (y + speed * dir[1] * nor) + "px";
-                       console.log(nor, dis);
                 }
                 
            
