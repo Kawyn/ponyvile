@@ -288,6 +288,16 @@
             
                 
             }
+            
+            function getKey(key)
+            {
+                console.log(key);
+                if(key.keyCode == 13)
+                {  
+          
+                }
+            }
         </script>
+        <input type="text" id="control" onkeypress="return getKey(event)" />
     </body>
 </html>
