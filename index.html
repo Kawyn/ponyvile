@@ -188,17 +188,23 @@
 
                 // Trotting way... 
                 var dir =  direction(pony.destination[0] - x, pony.destination[1]  - y);
+                var dis = distance(pony.div.style.left, pony.div.style.top, pony.destination[0], pony.destination[1]);
                 pony.img.style.transform = "scaleX(" + dir[0] + ")";
 
 
 
                 // TRANSLATE...
                 if(pony.destination[0] - x < -25 | pony.destination[0] - x > 25) 
-                    pony.div.style.left = (x + speed * dir[0])  + "px";
-            
+                {
+                    var nor = Math.abs((pony.destination[0] - pony.div.style.left) / dis);
+                    pony.div.style.left = (x + speed * dir[0] * nor)  + "px";
+                
+                }
                 if(pony.destination[1] - y < -25 |  pony.destination[1] - y > 25) 
-                    pony.div.style.top = (y + speed * dir[1]) + "px";
-       
+                {
+                    var nor = Math.abs((pony.destination[1] - pony.div.style.top) / dis);   
+                    pony.div.style.top = (y + speed * dir[1] * nor) + "px";
+                }
                 
            
                 // End it...
