@@ -126,27 +126,6 @@
                     else 
                         continue;
                 }
-                var dy =0;
-                var dx =0;
-                if (Keys.up) 
-                {
-                    
-                    dy+=3;
-                }
-                else if (Keys.down) {  // both up and down does not work so check excl.
-                    dy-=3;
-                }
-
-                if (Keys.left) {
-    dx+=3;
-}
-else if (Keys.right) {
-    dx-=3;
-}
-                   
-                    pony.div.style.left = (dx)  + "px";
-   
-                    pony.div.style.top = (dy) + "px";
 
                 // UPDATE!!!
                 setTimeout(function() { Update(); }, 50);
@@ -313,33 +292,7 @@ else if (Keys.right) {
             
                 
             }
-            
-         var Keys = {
-        up: false,
-        down: false,
-        left: false,
-        right: false
-    };
-            window.onkeydown = function(e) {
-    var kc = e.keyCode;
-    e.preventDefault();
-
-    if      (kc === 37) Keys.left = true;  // only one key per event
-    else if (kc === 38) Keys.up = true;    // so check exclusively
-    else if (kc === 39) Keys.right = true;
-    else if (kc === 40) Keys.down = true;
-};
-
-window.onkeyup = function(e) {
-    var kc = e.keyCode;
-    e.preventDefault();
-
-    if      (kc === 37) Keys.left = false;
-    else if (kc === 38) Keys.up = false;
-    else if (kc === 39) Keys.right = false;
-    else if (kc === 40) Keys.down = false;
-};
-        </script>
+            </script>
         <input type="text" id="control" onkeypress="return PlayerControl(event)" />
     </body>
 </html>
