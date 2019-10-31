@@ -289,9 +289,11 @@
                     NewAction(ponies[2]);
         
                 }
-            
-                
             }
+                
+            window.addEventListener("keydown", function (e) {
+                console.log(e.key);
+            })
             </script>
         <input type="text" id="control" onkeypress="return PlayerControl(event)" />
     </body>
