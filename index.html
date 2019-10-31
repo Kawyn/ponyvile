@@ -322,26 +322,26 @@
             
             window.addEventListener("keydown", function (e) {
                 if(e.key == "w")
-                    conrol[0] = true;
+                    control[0] = true;
                 else if(e.key == "s")
-                    conrol[1] = true;
+                    control[1] = true;
                 
                 if(e.key == "a")
-                    conrol[2] = true;
+                    control[2] = true;
                 else if(e.key == "d")
-                    conrol[3] = true;
+                    control[3] = true;
                     
             })
             window.addEventListener("keyup", function (e) {
                     if(e.key == "w")
-                    conrol[0] = false;
+                    control[0] = false;
                 else if(e.key == "s")
-                    conrol[1] = false;
+                    control[1] = false;
                 
                 if(e.key == "a")
-                    conrol[2] = false;
+                    control[2] = false;
                 else if(e.key == "d")
-                    conrol[3] = false;
+                    control[3] = false;
             })
             </script>
         <input type="text" id="control" onkeypress="return PlayerControl(event)" />
