@@ -102,6 +102,18 @@
                 pm[0] = 3;
             else if(control[3])
                 pm[0] = -3;
+                
+                
+               var player = document.getElementById("playerDiv").style;
+                
+                var x = parseInt(player.style.left) - pm[0];
+                var y = parseInt(player.style.top) - pm[1];
+
+                player.style.top = y;
+                player.style.left = x;
+                
+                console.log(player, x, y);
+                
             }
 
 
@@ -139,6 +151,7 @@
                     else 
                         continue;
                 }
+                playerMov();
 
                 // UPDATE!!!
                 setTimeout(function() { Update(); }, 50);
