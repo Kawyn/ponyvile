@@ -90,8 +90,7 @@
 
             var selectedPony;
             
-            var playerX;
-            var playerY;
+          
             //               w      a      s      d
             var control = [false, false, false, false];
             
@@ -118,9 +117,12 @@
                     control[1] = false;
                 else if(e.key == "d")
                     control[3] = false;
+
+                    console.log(e.key); 
             })
             function playerMov(){
-            
+                var playerX = 0;
+            var playerY = 0;
             if(control[0])
                 playerX = 3;
             else if(control[2])
