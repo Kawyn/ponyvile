@@ -6,10 +6,24 @@
 
         <title>Ponyvile</title>
     </head>
-    <body onload="Start();">
+    <body onload="Start();" scroll="no">
+        
+        <!-- Quests -->
+        <div id="questList">
+            <table>
+                <tr><td><div class="leftTopCorner"></div></td><th><p>-Quest List-</p></th><td><div class="rightTopCorner"></div></td></tr>
+                <tr><td colspan="3">Poruszanie się: WASD + Shift</td></tr>
+                <tr><td colspan="3">Go to Carousel Boutique</td></tr>
+                <tr><td colspan="3">Go to point A</td></tr>
+                <tr><td colspan="3">Go to point A</td></tr>
+                <tr><td><div class="leftBotCorner"></div></td><th><hr /></th><td><div class="rightBotCorner"></div></td></tr>
+            </table>
+        </div>
 
         <!-- World -->
-        <div ondrop="drop(event)" id="plane" ondragover="allowDrop(event)" style="background-color: forestgreen; width: 100%; height: 1000px;"><img src="http://pixelartmaker.com/art/6a68c9aee6a3655.png" style="width:100%; height:100vh"></div>
+        <div id="map" style="width: 5000px; height: 5000px; background-color: greenyellow;">
+            <img src="images/buildings/carouselBoutique.png" id="carouselBoutique" class="building" style="width: 350px; position:absolute; top: 600px; left: 1500px; z-index: 2;" />
+        </div>
             
 
          <!-- Player -->
@@ -19,26 +33,26 @@
         
         <!-- Sunset Shimmer -->
         <div id="sunsetShimmerDiv" class="pony" style="top: 0px; left: 0px;"> 
-            <table><tr><td><img src="images/sunsetShimmer_idle.gif" id="sunsetShimmerImg" draggable="true" ondragstart="drag(event, ponies[0])" onclick="Teleport(ponies[0]);"></td></tr></table>
+            <table><tr><td><img src="images/sunsetShimmer_idle.gif" id="sunsetShimmerImg" onclick="Teleport(ponies[0]);"></td></tr></table>
         </div>
 
         <!-- Songbird Serenade -->
         <div id="songbirdSerenadeDiv" class="pony" style="top: 900px; left: 900px;"> 
-                <table><tr><td><img src="images/songbirdSerenade_idle.gif" id="songbirdSerenadeImg" draggable="true" ondragstart="drag(event, ponies[1])"></td></tr></table>
+                <table><tr><td><img src="images/songbirdSerenade_idle.gif" id="songbirdSerenadeImg"></td></tr></table>
         </div>
       
         <!-- Fluffle Puff -->
         <div id="flufflePuffDiv" class="pony" style="top: 0px; left: 900px;"> 
-            <table><tr><td><img src="images/flufflePuff_idle.gif" id="flufflePuffImg" draggable="true" ondragstart="drag(event, ponies[2])" onclick="FlufflePuff();"></td></tr></table>
+            <table><tr><td><img src="images/flufflePuff_idle.gif" id="flufflePuffImg" onclick="FlufflePuff();"></td></tr></table>
         </div>
 
          <!-- Princess Luna -->
         <div id="princessLunaDiv" class="pony" style="top: 200px; left: 400px;"> 
-            <table><tr><td><img src="images/princessLuna_idle.gif" id="princessLunaImg" draggable="true" ondragstart="drag(event, ponies[3])"></td></tr></table>
+            <table><tr><td><img src="images/princessLuna_idle.gif" id="princessLunaImg"></td></tr></table>
         </div>
 
         <script>
-
+            
             // Ponies database...
             var ponies = [
                 /* Sunset Shimmer */    {
@@ -90,59 +104,257 @@
 
             var selectedPony;
             
-          
-            //               w      a      s      d
-            var control = [false, false, false, false];
-            
-            
-            window.addEventListener("keydown", function (e) {
-                if(e.key == "w")
-                    control[0] = true;
-                else if(e.key == "s")
-                    control[2] = true;
+            var sizeX = 5000;
+            var sizeY = 5000;
+
+            //#region NO GO ZONES!!!
                 
-                if(e.key == "a")
-                    control[1] = true;
-                else if(e.key == "d")
-                    control[3] = true;
+                var noGoZones = [
+                    /* Top Border */        {
+                        leftBot: [0, 50],
+                        rightTop: [sizeX, 0],
+                    },
+                    /* Top Border */        {
+                        leftBot: [0, sizeY],
+                        rightTop: [50, 0],
+                    },
+                    /* Carousel Boutique */ {
+                        leftBot: [1365, 1090],
+                        rightTop: [1790, 1000],
+                    },
+                ];
+
+
+                // Can Pony go here???
+                function canGo(x, y)
+                {
+
+                    var output = true;
+
+
+                    // Check every Zone...
+                    noGoZones.forEach(function(element) 
+                    {
+                       
+                        // Is destination in No Go Zone???
+                        if(element.leftBot[0] < x && x < element.rightTop[0])
+                             if(element.rightTop[1] < y && y < element.leftBot[1])
+                               output = false;
+                    });
                     
-            })
-            window.addEventListener("keyup", function (e) {
-                    if(e.key == "w")
-                    control[0] = false;
-                else if(e.key == "s")
-                    control[2] = false;
-                
-                if(e.key == "a")
-                    control[1] = false;
-                else if(e.key == "d")
-                    control[3] = false;
 
-                    console.log(e.key); 
-            })
-            function playerMov(){
-                var playerX = 0;
-            var playerY = 0;
-            if(control[0])
-                playerX = 3;
-            else if(control[2])
-                playerX = -3;
+                    // Yay... path is clear...
+                    return output;
+                }
+            //#endregion
+            //#region LAYER MANAGER!!!
                 
-            if(control[1])
-                playerY = -3;
-            else if(control[3])
-                playerY = -3;
+                var layerZones = [
+                     /* Carousel Boutique */ {
+                        leftBot: [1350, 1200],
+                        rightTop: [1800, 1090],
+                    },
+                ];
                 
-                
-               var player = document.getElementById("playerDiv").style;
-                
-                var x = parseInt(player.left) + playerX;
-                var y = parseInt(player.top) + playerY;
+                // Can Pony go here???
+                function LayerManager(x, y)
+                {
 
-                player.top = y + "px";
-                player.left = x + "px";
-            }
+                    var layer = 0;
 
+
+                    // Check every Zone...
+                    layerZones.forEach(function(element) 
+                    {
+                       
+                        // Is destination in Layer Zone???
+                        if(element.leftBot[0] < x && x < element.rightTop[0])
+                            if(element.rightTop[1] < y && y < element.leftBot[1])
+                                 layer = 3;
+                    });
+                    
+
+                    playerDiv.style.zIndex = layer;
+                }
+            //#endregion
+          
+            //#region PLAYER CONTROL
+            
+                //              =w=    =a=    =s=    =d=
+                var control = [false, false, false, false];
+                var sprint = false;
+
+                var playerImg = document.getElementById("playerImg");
+                var playerDiv = document.getElementById("playerDiv");
+                var playerSpeed = 3;
+                var playerRunSpeed = 10;
+                var isMoving = false;
+
+                var playerAnimations = ["images/sunsetShimmer_idle.gif","images/sunsetShimmer_walk.gif", "images/sunsetShimmer_run.gif", "images/sunsetShimmer_teleport.gif"];
+
+                // Input...
+                window.addEventListener("keydown", function (e) 
+                {
+
+                    // Vertical
+                    if(e.key == "w" || e.key == "W")
+                        control[0] = true;
+                    
+                    else if(e.key == "s" || e.key == "S")
+                        control[2] = true;
+                
+
+                    // Horizontal
+                    if(e.key == "a" || e.key == "A")
+                        control[1] = true;
+                    
+                    else if(e.key == "d" || e.key == "D")
+                        control[3] = true;
+
+
+                    // Sprint...
+                    if(e.key == "Shift")
+                    {
+
+                        sprint = true;
+                        isMoving = false;
+                    }
+                })
+                window.addEventListener("keyup", function (e) 
+                {
+                    
+                    // Vertical
+                    if(e.key == "w" || e.key == "W")
+                        control[0] = false;
+                    
+                    else if(e.key == "s" || e.key == "S")
+                        control[2] = false;
+                
+
+                    // Horizontal
+                    if(e.key == "a" || e.key == "A")
+                        control[1] = false;
+
+                    else if(e.key == "d" || e.key == "D")
+                        control[3] = false;
+
+                                    
+                    // Sprint...
+                    if(e.key == "Shift")
+                    {
+                        
+                        sprint = false;
+                        isMoving = false;
+                    }
+                })
+                
+                
+                function playerMov()
+                {
+
+                    // Varibles...
+                    var dir = [0, 0];
+                    var nor = 1;
+
+                    var player = document.getElementById("playerDiv").style;
+
+                    
+                    // Vertical
+                    if(control[0])
+                        dir[1] = -1;
+                    
+                    else if(control[2])
+                        dir[1] = 1;
+                    
+                    
+                    // Horizontal
+                    if(control[1])
+                        dir[0] = -1;
+                    
+                    else if(control[3])
+                        dir[0] = 1;
+                    
+                
+
+                    //#region ANIMATION!!!
+
+                        // Varible...
+                        var wasMoving = isMoving;
+                       
+
+                        // Is Player Moving?
+                        if(dir[0] == 0 && dir[1] == 0)
+                            isMoving = false;
+
+                        else
+                            isMoving = true;
+
+
+
+                        // Player started / stopped moving...
+                        if(wasMoving != isMoving)
+                        {
+
+                            // *STARTED...
+                            if(isMoving)
+                            {
+                               
+                                // **SPRINTING...
+                                if(sprint)
+                                    playerImg.src = playerAnimations[2];
+
+                                // **WALKING...
+                                else 
+                                    playerImg.src = playerAnimations[1];
+                            }
+
+                            // *STOPPED...
+                            else 
+                                playerImg.src = playerAnimations[0];
+                        }
+                    //#endregion
+                    
+
+
+
+                    if(dir[0] != 0 && dir[1] != 0)
+                        nor = 0.75;
+                    
+
+                    // Calculate...
+                    var speed = playerSpeed;
+
+                    if(sprint)
+                        speed = playerRunSpeed;
+                
+
+                    var x = parseInt(player.left) + dir[0] * speed * nor;
+                    var y = parseInt(player.top) + dir[1] * speed * nor;
+
+
+                    // NO GO ZONES
+                    if(!canGo(x, y))
+                       return;
+
+
+
+                    // TRANSLATE!!!
+                    player.top = y + "px";
+                    player.left = x + "px";
+
+                    if(dir[0] != 0)
+                        player.transform = "scaleX(" + dir[0] + ")";
+
+
+                    
+                    // Camera...
+                    window.scrollTo(x - screen.width / 2.25, y - screen.height / 2.75);
+
+                    LayerManager(x, y);
+                }
+            
+       
+            //#endregion
 
             // Start... like in Unity!!!
             function Start()
@@ -178,7 +390,9 @@
                     else 
                         continue;
                 }
-                playerMov();
+
+
+                    playerMov();
 
                 // UPDATE!!!
                 setTimeout(function() { Update(); }, 50);
@@ -301,51 +515,18 @@
                 }, 6000);
             }
 
-            function allowDrop(ev) 
-            {
-                ev.preventDefault();
-            }
-
-            function drag(ev, pony) 
-            {
-            
-                ev.dataTransfer.setData("text", ev.target.id);
-                selectedPony = pony;
-            }
-
-            function drop(ev) 
-            {
-                ev.preventDefault();
-         
-             
-                var x = ev.clientX;
-                var y = ev.clientY;
-                selectedPony.div.style.left = x - 100 + "px";
-                selectedPony.div.style.top = y - 100 + "px";
-            }
-            
-            var fluffleLove = false;
+       
             function FlufflePuff()
             {
 
-                fluffleLove = !fluffleLove;
-
-                if(fluffleLove)
-                {
-
-                    ponies[2].action = 3;
-                ponies[2].img.src = ponies[2].animations[fluffleLove + 2];
-                }
-                else{
-        
-                    
-                    NewAction(ponies[2]);
-        
-                }
-            }
+                // SMILE...
+                ponies[2].action = 3;
+                ponies[2].img.src = ponies[2].animations[3];
                 
-
-            </script>
-        <input type="text" id="control" onkeypress="return PlayerControl(event)" />
+                setTimeout( function() {
+                    NewAction(ponies[2]);
+                }, 2000);
+            }
+        </script>
     </body>
 </html>
