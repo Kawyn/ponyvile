@@ -13,7 +13,7 @@
             <table>
                 <tr><td><div class="leftTopCorner"></div></td><th><p>-Quest List-</p></th><td><div class="rightTopCorner"></div></td></tr>
                 <tr><td colspan="3">Poruszanie się: WASD + Shift</td></tr>
-                <tr><td colspan="3">Go to Carousel Boutique</td></tr>
+                <tr><td colspan="3" id="test">Go to Carousel Boutique</td></tr>
                 <tr><td colspan="3">Go to point A</td></tr>
                 <tr><td colspan="3">Go to point A</td></tr>
                 <tr><td><div class="leftBotCorner"></div></td><th><hr /></th><td><div class="rightBotCorner"></div></td></tr>
@@ -43,7 +43,7 @@
       
         <!-- Fluffle Puff -->
         <div id="flufflePuffDiv" class="pony" style="top: 0px; left: 900px;"> 
-            <table><tr><td><img src="images/flufflePuff_idle.gif" id="flufflePuffImg" onclick="FlufflePuff();"></td></tr></table>
+            <table><tr><td><img src="images/flufflePuff_idle.gif" id="flufflePuffImg" onclick="Smile(ponies[2]);"></td></tr></table>
         </div>
 
          <!-- Princess Luna -->
@@ -75,7 +75,7 @@
                     
                     action: 0
                 },
-                /* Songbird Serenade */ {
+                /* Fluffle Puff */ {
                     name: "flufflePuff", 
                     div: document.getElementById("flufflePuffDiv"),
                     img: document.getElementById("flufflePuffImg"), 
@@ -368,6 +368,8 @@
                 }
 
                 Update();
+
+
             }
 
             function Update()
@@ -393,7 +395,7 @@
 
 
                     playerMov();
-
+                    QuestManager(); 
                 // UPDATE!!!
                 setTimeout(function() { Update(); }, 50);
             }
@@ -495,38 +497,111 @@
 
                 return dis;
             }
-            function Teleport(pony)
-            {
+
+            //#region Special Interactions!!!
                 
-                // Teleport animation && stop Sunset Shimmer...
-                pony.img.src = pony.animations[3]; 
-                pony.action = 3;
-
-                // Change position...
-                setTimeout( function(){ 
-                    pony.div.style.left = Math.round(Math.random() * 1000) + "px";
-                    pony.div.style.top = Math.round(Math.random() * 1000) + "px";
-                }, 2000);
-
-
-                // Change animation...
-                setTimeout( function(){ 
-                    NewAction();
-                }, 6000);
-            }
-
-       
-            function FlufflePuff()
-            {
-
-                // SMILE...
-                ponies[2].action = 3;
-                ponies[2].img.src = ponies[2].animations[3];
+                function Teleport(pony)
+                {
                 
-                setTimeout( function() {
-                    NewAction(ponies[2]);
-                }, 2000);
-            }
+                    // Stop spaming!!!
+                    if(pony.action != 3)
+                    {
+
+                        // Teleport animation...
+                        pony.img.src = pony.animations[3]; 
+                        pony.action = 3;
+
+                        // Change position...
+                        setTimeout(function() { 
+                            pony.div.style.left = Math.round(Math.random() * sizeX) + "px";
+                            pony.div.style.top = Math.round(Math.random() * sizeY) + "px";
+                        }, 2000);
+
+
+                        // Change animation...
+                        setTimeout(function() { 
+                            NewAction(pony);
+                        }, 6000);
+                    }
+                }
+                function Smile(pony)
+                {
+                    
+                    // Stop spaming!!!
+                    if(pony.action != 3)
+                    {
+                        // SMILE...
+                        pony.action = 3;
+                        pony.img.src = pony.animations[3];
+                
+                        setTimeout(function() {
+                            NewAction(pony);
+                        }, 2000);
+                    }
+                }
+            //#endregion
+
+            //#region Quest Manager
+            
+                var quests = [
+                    /* Go to Carousel Boutique */ {
+                        name: "Go to Carousel Boutique",
+                        type: 0,
+
+                        target: [1500, 1100],
+                        done: false,
+                }];
+
+                function QuestManager()
+                {
+                    
+                    quests.forEach(function(quest) {
+                        
+                        if(quest.done)
+                        {}
+                        else if(quest.type == 0)
+                            goToQuest(quest);
+                    });
+                }
+                
+                function goToQuest(quest)
+                {
+
+                    // Pony position...
+                    var position = [parseInt(playerDiv.style.left), parseInt(playerDiv.style.top)];
+
+                    // Area borders...
+                    var leftBot = [quest.target[0] - 100, quest.target[1] + 100];
+                    var rightTop = [quest.target[0] + 100, quest.target[1] - 100];
+
+
+      
+                    if(inArea(leftBot, rightTop, position))
+                    {
+                        
+                        document.getElementById("test").innerHTML = "Brawo udało ci się dojść do domku rarity, lecz niestety nie ma jej tam";
+                        quest.done = true;
+                    }
+                }
+
+
+                
+            //#endregion
+      
+                function inArea(leftBot, rightTop, pony)
+                {
+
+                    // Varible...
+                    var output = false;
+
+
+                    if(leftBot[0] < pony[0] && pony[0] < rightTop[0])
+                            if(rightTop[1] < pony[1] && pony[1] < leftBot[1])
+                                output = true;
+
+                    // RETURN...
+                    return output;
+                }
         </script>
     </body>
 </html>
