@@ -5,9 +5,47 @@
         <link rel="stylesheet" href="style.css" type="text/css" />
 
         <title>Ponyvile</title>
+
+        <script src="scripts/inventoryManager.js"></script>
+        <script src="scripts/dialogueManager.js"></script>
+        <script src="scripts/timeManager.js"></script>
+        
     </head>
     <body onload="Start();" scroll="no">
+        <div id="whiteScreen"></div>
         
+        
+        <div id="dialogueInterface" style='display: none; background-image: url("images/backgrounds/ponyvile_1.png"); height: 100vh; position: fixed; width: 100%; z-index: 10;'>
+            <div>
+                <div id="dialogueBar">
+                    <p class="statement">Statement</p>
+                    <p class="anserw">1. Anserw</p>    
+                    <p class="anserw">2. Anserw</p>   
+                    <p class="anserw">3. Anserw</p>     
+                </div>
+                
+                <table style="width: 100%; margin-top: 30vh;">
+                    <tr>
+                        <td style="width: 50%;">
+                            <img src="images/Avatars/vinylScratch.png" id="playerAvatar" style="margin-left: 17.5%" />
+                        </td>
+                        <td>
+                            <img src="images/Avatars/flufflePuff.png" id="ponyAvatar" style="float:right; margin-right: 17.5%;" />
+                            <br style="clear: both;" />
+                        </td>
+                    </tr>
+                </table>
+                
+            </div>
+        </div>
+        
+        <div id="actionHint">
+            <div>
+               <p id="actionHintAction"><span>E</span>Talk</p>
+               <p id="actionHintObject" style="margin-top: 15px;">Spike</p>
+            </div>
+        </div>
+
         <!-- Quests -->
         <div id="questList">
             <table>
@@ -27,7 +65,7 @@
             
 
          <!-- Player -->
-        <div id="playerDiv" class="pony" style="top: 1000px; left: 1000px;"> 
+        <div id="playerDiv" class="pony" style="top: 1100px; left: 1100px;"> 
             <table><tr><td><img src="images/sunsetShimmer_idle.gif" id="playerImg"></td></tr></table>
         </div>
         
@@ -52,51 +90,72 @@
         </div>
 
         <script>
-            
+
+            // ACTIONS
+            var actionHint = {
+                main: document.getElementById("actionHint"),
+                action: document.getElementById("actionHintAction"),
+                object: document.getElementById("actionHintObject"),
+            }
+            var dialogueInterface = {
+                main: document.getElementById("dialogueInterface"),
+                player: document.getElementById("playerAvatar"),
+                pony: document.getElementById("ponyAvatar"),
+                statement: document.getElementById("dialogueInterface").getElementsByTagName("p")[0],
+                anserws: [document.getElementById("dialogueInterface").getElementsByTagName("p")[1], document.getElementById("dialogueInterface").getElementsByTagName("p")[2], document.getElementById("dialogueInterface").getElementsByTagName("p")[3]],
+            }
             // Ponies database...
             var ponies = [
                 /* Sunset Shimmer */    {
-                    name: "sunsetShimmer", 
+                    name: "Sunset Shimmer", 
                     div: document.getElementById("sunsetShimmerDiv"),
                     img: document.getElementById("sunsetShimmerImg"), 
                     
                     destination: [0 ,0], 
                     animations: ["images/sunsetShimmer_idle.gif","images/sunsetShimmer_walk.gif", "images/sunsetShimmer_run.gif", "images/sunsetShimmer_teleport.gif"],
                 
+                    avatar: "images/Avatars/sunsetShimmer.png",
                     action: 0
                 },
                 /* Songbird Serenade */ {
-                    name: "songbirdSerenade", 
+                    name: "Songbird Serenade", 
                     div: document.getElementById("songbirdSerenadeDiv"),
                     img: document.getElementById("songbirdSerenadeImg"), 
                     
                     destination: [0 ,0], 
                     animations: ["images/songbirdSerenade_idle.gif","images/songbirdSerenade_trotting.gif", "images/songbirdSerenade_flying.gif"],
                     
+                    avatar: "images/Avatars/sunsetShimmer.png",
                     action: 0
                 },
                 /* Fluffle Puff */ {
-                    name: "flufflePuff", 
+                    name: "Fluffle Puff", 
                     div: document.getElementById("flufflePuffDiv"),
                     img: document.getElementById("flufflePuffImg"), 
                     
                     destination: [0 ,0], 
                     animations: ["images/flufflePuff_idle.gif", "images/flufflePuff_trotting.gif", "images/flufflePuff_trotting.gif", "images/flufflePuff_gasping.gif", "images/flufflePuff_phbbt.gif"],
                     
-                    action: 0
+                    avatar: "images/Avatars/flufflePuff.png",
+                    action: 0,
+
+                    // Dialogue...
+                    startStatement: 0,
                 },
                 /* Princess Luna */ {
-                    name: "princessLuna", 
+                    name: "Princess Luna", 
                     div: document.getElementById("princessLunaDiv"),
                     img: document.getElementById("princessLunaImg"), 
                     
                     destination: [0 ,0], 
                     animations: ["images/princessLuna_idle.gif", "images/princessLuna_trotting.gif", "images/princessLuna_flying.gif"],
                     
+                    avatar: "images/Avatars/sunsetShimmer.png",
                     action: 0
                 }                             
             ];
-
+            var worldCondition = [false, false, false];
+          
 
             // Some varibles...
             var moveSpeed = 3;
@@ -119,7 +178,7 @@
                         rightTop: [50, 0],
                     },
                     /* Carousel Boutique */ {
-                        leftBot: [1365, 1100],
+                        leftBot: [1365, 1090],
                         rightTop: [1790, 1000],
                     },
                 ];
@@ -218,6 +277,19 @@
 
                         sprint = true;
                         isMoving = false;
+                    }
+
+                    // TALK... TAKE... OPEN... and others...
+                    if(e.key == "e" || e.key == "E")
+                    {
+
+                        if(dialogue.pony != false){
+                            StartConversation();
+                        }
+                    }
+                    if(e.key == "f" || e.key == "F")
+                    {
+                        PickUp();
                     }
                 })
                 window.addEventListener("keyup", function (e) 
@@ -355,8 +427,27 @@
             
        
             //#endregion
+            function isCloseEnough(object)
+            {
 
+                var isNear = false;
+                var distance = 100;
+
+                var objectPos = [parseInt(object.left), parseInt(object.top)];
+                var playerPos = [parseInt(playerDiv.style.left), parseInt(playerDiv.style.top)];
+
+                // Is Close Enough???   
+                if(playerPos[0] - distance < objectPos[0] && objectPos[0] < playerPos[0] + distance)
+                    if(playerPos[1] - distance < objectPos[1] && objectPos[1] < playerPos[1] + distance)
+                        isNear = true;
+
+                return isNear;
+            }
             // Start... like in Unity!!!
+            
+            
+      
+
             function Start()
             {
 
@@ -372,6 +463,7 @@
 
             }
 
+            var second = false
             function Update()
             {
 
@@ -395,7 +487,13 @@
 
 
                     playerMov();
+
+                    if(second){
+                    
                     QuestManager(); 
+                    ActionManager();
+                    }
+                    second = !second;
                 // UPDATE!!!
                 setTimeout(function() { Update(); }, 50);
             }
@@ -602,6 +700,17 @@
                     // RETURN...
                     return output;
                 }
+            function Fade()
+            {
+
+                var screen = document.getElementById('whiteScreen');
+                var newScreen = screen.cloneNode(screen);
+                screen.parentNode.replaceChild(newScreen, screen)
+            }
+
+            function toCode(code) {
+                eval(code);
+            }
         </script>
     </body>
 </html>
