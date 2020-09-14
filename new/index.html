@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <meta name="keywords" content="" />
+        
+        <link rel="stylesheet" href="style.css" type="text/css" />
+
+        <title>Ponyvile</title>
+
+        <script src="./library/vectors.js"></script>
+        <script src="./library/transforms.js"></script>
+        <script src="./library/colliders.js"></script>
+
+        <script src="./engine.js"></script>
+  </head>
+  <body style="background-color: yellowgreen;"  onload="fade(false)">
+    <div id="interface">
+      <div id="overlay" style="opacity: 1;"></div>
+      
+      <div id="dialogue" style="display: none;">
+
+        <!-- Quote -->
+        <div id="quote" style="bottom: 25%;">
+          <h1 id="quote_author" style="color: #E1464A ;">NAME</h1>
+          <h1 id="quote_content">Content</h1>
+        </div>
+
+        <!-- Answers -->
+        <div class="_answers" style="bottom: 0%;" onclick="dialogues.Display(lastquote.GetAnswers(ponytotalk)[0].GetQuote(ponytotalk));">
+          <div class="_answers_index" style="background-color:#E1464A;">
+            <div style="width: 100%; height: 100%;">1</div>
+          </div> 
+          <h1 class="_answers_content">Content</h1>
+        </div>
+
+        <div class="_answers" style="bottom: 0%;" onclick="dialogues.Display(lastquote.GetAnswers(ponytotalk)[1].GetQuote(ponytotalk));">
+          <div class="_answers_index" style="background-color:#E1464A;">
+            <div style="width: 100%; height: 100%;">2</div>
+          </div> 
+          <h1 class="_answers_content">Content</h1>
+        </div>
+
+        <div class="_answers" style="bottom: 0%;" onclick="dialogues.Display(lastquote.GetAnswers(ponytotalk)[2].GetQuote(ponytotalk));">
+          <div class="_answers_index" style="background-color:#E1464A;">
+            <div style="width: 100%; height: 100%;">3</div>
+          </div> 
+          <h1 class="_answers_content">Content</h1>
+        </div>
+
+        <!-- Avatar -->
+        <div id="interlocutor" style="background-image: url();"></div>
+      </div>
+
+
+  
+    </div>    
+ 
+    <div id="hint">
+        <span>F</span> Rozmawiaj <br />
+        Sunset Shimmer
+      </div>
+    <div style="width: 5000px; height: 5000px;"></div>
+    
+    
+    <script src="ponyvile.js"></script>
+  </body>
+</html>
