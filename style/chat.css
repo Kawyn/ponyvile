@@ -1,0 +1,106 @@
+#chat * {
+    image-rendering: auto !important;
+}
+
+#chat {
+    width: 100%;
+    height: 100%;
+}
+
+#chat-background {
+    left: 50%;
+    top: 50%;
+
+    height: 101%;
+    width: 101%;
+
+    transform: translate(-50%, -50%);
+    filter: blur(2.5px);
+
+    object-fit: cover;
+}
+
+#chat-portrait {
+    left: 50%;
+    top: 55%;
+
+    height: 80%;
+
+    transform: translate(-50%, -50%);
+}
+
+#chat-bar {
+    position: absolute;
+    width: 100%;
+    height: 25%;
+    background: linear-gradient(
+        0deg,
+        rgba(var(--primary), 0.8) 0%,
+        rgba(var(--primary), 0.6) 65%,
+        rgba(var(--primary), 0.26) 100%
+    );
+    bottom: 0;
+    border-top: 1px solid rgba(var(--primary), 1);
+}
+
+#chat-character {
+    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+    color: whitesmoke;
+    margin: 0%;
+    padding: 0% 20%;
+    margin-top: 5%;
+    opacity: 0.9;
+}
+
+.chat-response {
+    position: absolute;
+    width: 60%;
+    left: 20%;
+    color: whitesmoke;
+    text-shadow: 0 0 2.5px #000;
+    top: 30%;
+
+    font-size: 1.3pc;
+    text-align: center;
+    padding: 1%;
+    background: #000;
+    border-bottom: 1px solid rgba(var(--primary), 0.75);
+    border-top: 1px solid rgba(var(--primary), 0.75);
+
+    background: linear-gradient(
+        90deg,
+        rgba(var(--primary), 0) 0%,
+        rgba(var(--primary), 0.5) 10%,
+        rgba(var(--primary), 0.9) 50%,
+        rgba(var(--primary), 0.5) 90%,
+        rgba(var(--primary), 0) 100%
+    );
+}
+
+.chat-response:hover {
+    background: linear-gradient(
+        90deg,
+        rgba(var(--secondary), 0) 0%,
+        rgba(var(--secondary), 0.5) 10%,
+        rgba(var(--secondary), 0.9) 50%,
+        rgba(var(--secondary), 0.5) 90%,
+        rgba(var(--secondary), 0) 100%
+    );
+    border-bottom: 1px solid rgba(var(--secondary), 0.75);
+    border-top: 1px solid rgba(var(--secondary), 0.75);
+}
+
+.chat-response:nth-of-type(1) {
+    top: 30%;
+    left: 15%;
+}
+
+.chat-response:nth-of-type(2) {
+    top: 40%;
+    left: 20%;
+}
+
+.chat-response:nth-of-type(3) {
+    top: 50%;
+    left: 25%;
+}

@@ -1,0 +1,84 @@
+.entity {
+    background-position: center;
+    background-size: cover;
+
+    background-repeat: no-repeat;
+}
+
+:root {
+    --primary: 0, 0, 0;
+    --secondary: 225, 225, 225;
+}
+
+.pony {
+    position: absolute;
+}
+
+* {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+}
+
+html {
+    overflow: hidden;
+    height: 100%;
+}
+
+body {
+    margin: 0%;
+    padding: 0%;
+    height: 100%;
+}
+
+#origin {
+    width: 10px;
+    background-color: pink;
+    height: 10px;
+    z-index: 19;
+    position: absolute;
+}
+
+#point {
+    width: 10px;
+    background-color: purple;
+    height: 10px;
+    position: absolute;
+}
+
+#interface {
+    position: absolute;
+
+    top: 0px;
+    left: 0px;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 100;
+}
+
+* {
+    image-rendering: pixelated;
+}
+
+img {
+    border: 0px;
+}
+
+*[name="box-collider"] {
+    position: absolute;
+
+    border: 1px solid greenyellow;
+}
+
+#interface * {
+    position: absolute;
+}
+#veil {
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    background-color: #fff;
+}
