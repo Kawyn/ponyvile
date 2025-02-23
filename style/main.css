@@ -72,9 +72,15 @@ img {
     border: 1px solid greenyellow;
 }
 
+.box-collider {
+
+    border: 1px solid greenyellow;
+}
+
 #interface * {
     position: absolute;
 }
+
 #veil {
     z-index: 1000;
     width: 100%;

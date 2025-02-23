@@ -14,7 +14,6 @@
 */
 Array.prototype.random = function () {
 
-    console.log(this);
     return this[Math.floor(Math.random() * this.length)];
 }
 
@@ -38,15 +37,15 @@ class Pony extends Entity {
 
     onRefresh = () => { };
 
-    constructor (name, position, { schedule = [], animations = {}, onRefresh = null } = {}) {
+    constructor(name, position, { schedule = [], animations = {}, onRefresh = null } = {}) {
 
-        super(name, position, new Vector2(100, 100), {
+        super(name, position, new Vector(100, 100), {
             tags: ['pony'],
 
             colliders: [
                 new Collider({
-                    size: new Vector2(200, 200),
-                    offset: new Vector2(-50, -50),
+                    size: new Vector(200, 200),
+                    offset: new Vector(-50, -50),
 
                     trigger: true,
 
@@ -66,7 +65,7 @@ class Pony extends Entity {
             ]
         });
 
-        this.speechBaloon = new Text(position, new Vector2(500, 50), '', { target: this });
+        this.speechBaloon = new Text(position, new Vector(500, 50), '', { target: this });
 
         const char = name[0].toLowerCase();
 
@@ -114,12 +113,12 @@ class Player extends Entity {
     target;
     move() {
 
-        const direction = new Vector2(this.destination.x - this.position.x, this.destination.y - this.position.y);
+        const direction = new Vector(this.destination.x - this.position.x, this.destination.y - this.position.y);
 
         direction.normalize()
         direction.scale(this.velocity * (Input.keys['shift'] ? 1.5 : 1) * Time.deltaTime / 1000);
 
-        const position = Vector2.sum(this.position, direction);
+        const position = Vector.sum(this.position, direction);
 
         this.position = position;
         this.flip(direction.x < 0);
@@ -134,7 +133,7 @@ class Player extends Entity {
 
             this.destination = Input.mouseDocumentPosition.substract(this.size.scale(0.5));
 
-            if (Vector2.distance(this.position, this.destination) < 2.5)
+            if (Vector.distance(this.position, this.destination) < 2.5)
                 return;
 
             this.move();
@@ -151,9 +150,9 @@ class Player extends Entity {
 
     }
 
-    constructor (position, { animations = {} } = {}) {
+    constructor(position, { animations = {} } = {}) {
 
-        super('Player', position, new Vector2(100, 100), {
+        super('Player', position, new Vector(100, 100), {
             tags: ['pony'],
             colliders: [new Collider()]
         });
@@ -176,7 +175,7 @@ class Animator {
     playing;
     animations;
 
-    constructor (entity, animations) {
+    constructor(entity, animations) {
 
         this.#entity = entity;
         this.animations = animations || {};
@@ -254,11 +253,11 @@ class Input {
 
     static mouseButtons = [false, false, false];
 
-    static mouseScreenPosition = new Vector2(0, 0);
+    static mouseScreenPosition = new Vector(0, 0);
 
     static get mouseDocumentPosition() {
 
-        return new Vector2(Input.mouseScreenPosition.x + window.scrollX, Input.mouseScreenPosition.y + window.scrollY);
+        return new Vector(Input.mouseScreenPosition.x + window.scrollX, Input.mouseScreenPosition.y + window.scrollY);
     }
 }
 
@@ -299,7 +298,7 @@ window.addEventListener('mouseup', event => {
 
 window.addEventListener('mousemove', event => {
 
-    Input.mouseScreenPosition = new Vector2(event.x, event.y);
+    Input.mouseScreenPosition = new Vector(event.x, event.y);
 })
 
 var pause = false;
@@ -333,15 +332,15 @@ const Physics = {
     },
     /**
      * 
-     * @param {Vector2} origin 
-     * @param {Vector2} direction 
+     * @param {Vector} origin 
+     * @param {Vector} direction 
      * @param {Collider} target 
      * @returns
      */
     raycast(origin, direction, target) {
 
-        const near = new Vector2(target.position.x - origin.x, target.position.y - origin.y);
-        const far = new Vector2(near.x + target.size.x, near.y + target.size.y);
+        const near = new Vector(target.position.x - origin.x, target.position.y - origin.y);
+        const far = new Vector(near.x + target.size.x, near.y + target.size.y);
 
         near.x /= direction.x;
         near.y /= direction.y;
@@ -367,8 +366,8 @@ const Physics = {
         const dir = direction.clone()
         dir.scale(nearHit);
 
-        const point = new Vector2(origin.x + dir.x, origin.y + dir.y);
-        const normal = new Vector2(0, 0);
+        const point = new Vector(origin.x + dir.x, origin.y + dir.y);
+        const normal = new Vector(0, 0);
 
 
         if (near.x > near.y) {
@@ -442,21 +441,21 @@ const Physics = {
 
                     else {
 
-                        const origin = Vector2.sum(a.position, a.size.scale(0.5));
-                        const direction = Vector2.sum(b.position, b.size.scale(0.5)).substract(origin).normalize();
+                        const origin = Vector.sum(a.position, a.size.scale(0.5));
+                        const direction = Vector.sum(b.position, b.size.scale(0.5)).substract(origin).normalize();
 
                         const ray = Physics.raycast(origin, direction, b);
 
                         if (ray) {
 
                             if (ray.normal.x === 1)
-                                player.position = new Vector2(b.position.x + b.size.x, a.entity.position.y);
+                                player.position = new Vector(b.position.x + b.size.x, a.entity.position.y);
                             else if (ray.normal.x === -1)
-                                player.position = new Vector2(b.position.x - a.size.x, a.entity.position.y);
+                                player.position = new Vector(b.position.x - a.size.x, a.entity.position.y);
                             else if (ray.normal.y === 1)
-                                player.position = new Vector2(a.entity.position.x, b.position.y + b.size.y);
+                                player.position = new Vector(a.entity.position.x, b.position.y + b.size.y);
                             else if (ray.normal.y === -1)
-                                player.position = new Vector2(a.entity.position.x, b.position.y - a.size.y);
+                                player.position = new Vector(a.entity.position.x, b.position.y - a.size.y);
                         }
                     }
                 }

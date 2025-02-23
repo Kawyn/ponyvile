@@ -1,4 +1,4 @@
-class Collider {
+class Collidersssssssssssss {
 
     #entity;
 
@@ -50,7 +50,7 @@ class Collider {
         return new Vector2(this.entity.position.x + this.offset.x, this.entity.position.y + this.offset.y);
     }
 
-    constructor ({ size = new Vector2(0, 0), offset = new Vector2(0, 0), trigger = false, active = true, onEnter = null, onExit = null, onStay = null } = {}) {
+    constructor({ size = new Vector2(0, 0), offset = new Vector2(0, 0), trigger = false, active = true, onEnter = null, onExit = null, onStay = null } = {}) {
 
         this.offset = offset || new Vector2(0, 0);
         this.size = size || new Vector2(0, 0);

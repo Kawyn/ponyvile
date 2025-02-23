@@ -9,7 +9,7 @@ var player = null;
 const entities = [];
 
 const styles = ['main.css', 'chat.css'];
-const modules = ['vector2.js', 'collider.js', 'entity.js', 'schedule.js', 'chat.js', 'old-indddex.js', 'ui.js']
+const modules = ['vector.js', 'engine/components/base/Component.js', 'engine/components/base/Component.js', 'schedule.js', 'chat.js', 'old-indddex.js', 'ui.js']
 
 
 

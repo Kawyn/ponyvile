@@ -6,39 +6,375 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Ponyvile</title>
+    <script src="./src/chaos/struct/Vector.js"></script>
+    <script src="./src/chaos/struct/PriorityQueue.js"></script>
+    <script src="./src/chaos/DynamicValue.js"></script>
+    <script src="./src/chaos/EventManager/EventManager.js"></script>
+    <script src="./src/chaos/EventManager/TimeManager.js"></script>
+    <script src="./src/chaos/web/InputManager.js"></script>
+    <script src="./src/engine/other/dialogue/Dialogue.js"></script>
+    <script src="./src/engine/ui/windows/WindowManager.js"></script>
+    <script src="./src/engine/ui/windows/WindowBase.js"></script>
+    <script src="./src/engine/ui/displayers/DisplayerBase.js"></script>
+    <script src="./src/engine/ui/displayers/DisplayerManager.js"></script>
+    <script src="./src/game/ui/windows/DialogueWindow.js"></script>
+    <script src="./src/game/ui/displayers/InteractionDisplayer.js"></script>
 
-    <script src="./src/index.js"></script>
+    <script src="./src/engine/Scene.js"></script>
+    <script src="./src/engine/Actor.js"></script>
+    <script src="./src/engine/ActorEvents.js"></script>
+    <script src="./src/engine/components/base/Component.js"></script>
+    <script src="./src/engine/components/interactable/_EventNames.js"></script>
+    <script src="./src/engine/components/interactable/Interactable.js"></script>
+    <script src="./src/engine/components/interactable/InteractionByTriggerController.js"></script>
+    <script src="./src/engine/components/interactable/InteractionState.js"></script>
+    <script src="./src/engine/components/interactable/InteractOnKeyPress.js"></script>
+    <script src="./src/chaos/LocalizationSystem.js"></script>
+    <script src="./src/engine/components/events/ActionOnActorEvent.js"></script>
+    <script src="./src/engine/Game.js"></script>
+    <script src="./src/engine/ui/windows/FadeWindow.js"></script>
+    <script src="./src/chaos/random/LCG.js"></script>
+    <script src="./src/game/components/environment/GrassSpawner.js"></script>
+
+
+    <script src="./src/engine/components/base/Transform.js"></script>
+    <script src="./src/engine/components/physic/_EventNames.js"></script>
+    <script src="./src/engine/components/physic/BoxCollider.js"></script>
+    <script src="./src/engine/components/physic/PhysicController.js"></script>
+    <script src="./src/engine/components/physic/Rigidbody.js"></script>
+    <script src="./src/engine/components/movement/ObjectWithVelocity.js"></script>
+    <script src="./src/engine/components/movement/ObjectWithVelocityMoveEveryFrame.js"></script>
+    <script src="./src/game/components/renderer/Renderable.js"></script>
+    <script src="./src/game/components/player/CharacterController.js"></script>
+    <script src="./src/game/components/player/CameraController.js"></script>
+    <script src="./src/engine/components/renderer/Visualization.js"></script>
+    <script src="./src/engine/components/renderer/VisualizationPriorityController.js"></script>
+    <script src="./src/game/components/renderer/RenderableByVisualizationController.js"></script>
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        .box-collider {
+
+            border: 1px solid greenyellow;
+        }
+
+
+        #interface {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #dialogue-window {
+            position: relative;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            overflow: hidden;
+        }
+
+        #chat-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            /* Tło za innymi elementami */
+        }
+
+        #chat-portrait {
+            position: absolute;
+            bottom: 80px;
+            /* Dopasuj wartość w zależności od wielkości paska */
+            left: 20px;
+            width: 100px;
+            /* Rozmiar portretu */
+            height: 100px;
+            object-fit: contain;
+        }
+
+
+        .dialogue-window-name {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .dialogue-window-text {
+            margin-top: 10px;
+            font-size: 1.2rem;
+        }
+
+        .chat-response {
+            position: relative;
+            margin: 10px 20px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 1rem;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .chat-response:hover {
+            background-color: rgba(255, 255, 255, 0.8);
+            color: black;
+        }
+
+        #dialogue-window {
+            position: absolute;
+            left: 0;
+            top: 0px;
+
+            background-color: #000000aa;
+        }
+
+        .window[is-visible='true'] {
+            opacity: 1;
+            visibility: visible;
+            transition: visibility 1s, opacity 0.3s ease-out;
+
+        }
+
+        .window[is-visible='false'] {
+            opacity: 0;
+            visibility: hidden;
+            transition: visibility 1s, opacity 0.3s ease-in;
+
+        }
+
+        #fade-window {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+
+            background-color: #061020;
+        }
+
+        .dialogue-window-characters {
+            position: absolute;
+            width: 80%;
+            max-width: 180vh;
+            min-width: 130vh;
+            left: 50%;
+            transform: translate(-50%);
+        }
+
+        .dialogue-window-characters>img {
+            height: 120vh;
+            position: absolute;
+            bottom: -25vh;
+
+            transition: filter 0.15s ease-in;
+            transition: transform 0.15s ease-in;
+        }
+
+        .dialogue-window-characters>img[highlight="true"] {
+            transform: scale(1);
+            /* Pomniejszenie obrazu */
+            filter: brightness(100%) blur(0vh);
+        }
+
+        .dialogue-window-characters>.dialogue-window-character-right {
+            transform: scaleX(-1)
+        }
+
+        .dialogue-window-characters>.dialogue-window-character-right[highlight="true"] {
+            transform: scaleX(-1) scaleY(1);
+
+        }
+
+        .dialogue-window-characters>.dialogue-window-character-right[highlight="false"] {
+            transform: scaleX(-0.95) scaleY(0.95);
+
+        }
+
+        .environment-floor {
+            z-index: -1;
+        }
+
+        .dialogue-window-characters>img[highlight="false"] {
+            transform: scale(0.95);
+            /* Pomniejszenie obrazu */
+            filter: brightness(50%) blur(0.2vh);
+            /* Przyciemnienie i rozmycie */
+        }
+
+        .dialogue-bar {
+            color: white;
+            width: 80%;
+            min-width: 600px;
+            height: 24vh;
+            margin-bottom: 1vh;
+            border: 0.4vh solid white;
+            border-radius: 1vh;
+            border-top-left-radius: 0;
+            padding: 0vh 1vh;
+            font-family: sans-serif;
+            line-height: 2vh;
+            font-size: 2vh;
+            position: relative;
+        }
+
+        #dialogue-window * {
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .dialogue-window-name {
+            border: 0.4vh solid white;
+            top: calc(-5vh - 0.4vh);
+            left: calc(0vh - 0.4vh);
+            height: 4vh;
+            width: 24vh;
+            border-radius: 1vh;
+            position: absolute;
+            background-color: #f140a988;
+            line-height: 4vh;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            font-size: 3vh;
+            font-family: sans-serif;
+            padding: 0px 1vh;
+            text-transform: capitalize;
+            user-select: none;
+
+        }
+
+        .dialogue-responses {
+            width: 40%;
+            min-width: 400px;
+            margin-bottom: 48vh;
+            display: flex;
+            flex-direction: column-reverse;
+            flex-wrap: nowrap;
+            align-content: center;
+            justify-content: space-around;
+            align-items: center;
+            height: 32vh;
+        }
+
+        .dialogue-response {
+            border: 0.4vh solid white;
+            width: 80%;
+            min-width: 600px;
+            border-radius: 1vh;
+            background-color: #f140a988;
+
+            margin-bottom: 1vh;
+            line-height: 5vh;
+            font-size: 2.5vh;
+            font-family: sans-serif;
+            height: 5vh;
+            padding: 0px 1vh;
+            color: white;
+
+        }
+
+        .dialogue-response:hover {
+            background-color: #fa60bd88;
+        }
+
+        .dialogue-main {
+            width: 100%;
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            align-content: center;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+
+        .dialogue-window-text {
+            position: absolute;
+        }
+
+        .dialogue-response,
+        .dialogue-window-name,
+        .dialogue-bar {
+
+            background: #f140a988;
+            background-repeat: repeat;
+            background-image:
+                radial-gradient(circle at center, #ec058e88 30%, transparent 35%),
+                radial-gradient(circle at center, #ec058e88 30%, transparent 35%);
+            background-size: 8vh 8vh;
+            background-position: 0 0vh, 4vh 4vh;
+        }
+    </style>
 </head>
 
-<body onload="init('test.js')" style="background-image:
-        -webkit-linear-gradient(45deg, #000 25%, transparent 25%,transparent 75%, #000 75%, #000 100%),
-        -webkit-linear-gradient(45deg, #000 25%, transparent 25%,transparent 75%, #000 75%, #000 100%);
-        background-size:100px 100px;
-        background-position:0 0, 50px 50px;">
+<body style="background-color: #b7d867; width: 10000px; height: 10000px;" , width="1000" , height="10000px">
+    <div id="veil" style="opacity: 1"></div>
+    <div id="interaction" style="display: none;">F Rozmwaiaj</div>
+
+    <div id="scene"></div>
     <div id="interface">
-        <div id="veil" style="opacity: 1"></div>
-        <div id="interaction" style="display: none;">F Rozmwaiaj</div>
 
-        <div id="chat" style="display: none">
-            <img id="chat-background" src="./images/backgrounds/ponyvile_1.png" />
-            <img id="chat-portrait" src="./images/Avatars/vinylScratch.png" />
+        <div id="interaction-displayer">
+            <div class="content">
+                <div class="interaction-displayer-key"></div>
+                <div class="interaction-displayer-text"></div>
+            </div>
+        </div>
 
-            <div id="chat-bar">
-                <h1 id="chat-character">Sunset Shimmer</h1>
-                <div id="chat-text"></div>
+        <div id="dialogue-window" class="window dialogue-window-continue">
+            <div class="dialogue-window-characters">
+                <img class="dialogue-window-character-left" style="left: -40%;" highlight="false" src="" />
+                <img class="dialogue-window-character-right" style="right: -40%;" src="" />
             </div>
 
-            <div class="chat-response" onclick="ChatSystem.choose(0)">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+            <div class="dialogue-main">
+                <div class="dialogue-bar">
+                    <h1 class="dialogue-window-name">Sunset Shimmer</h1>
+                    <div class="dialogue-window-text"></div>
+                </div>
+
+                <div class="dialogue-response" onclick="e.ChatSystem.choose(0)" style="display: none;">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                </div>
+                <div class="dialogue-response" onclick="ChatSystem.choose(1)" style="display: none;">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                </div>
+                <div class="dialogue-response" onclick="ChatSystem.choose(2)" style="display: none;">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                </div>
             </div>
-            <div class="chat-response" onclick="ChatSystem.choose(1)">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            </div>
-            <div class="chat-response" onclick="ChatSystem.choose(2)">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            </div>
+
+        </div>
+
+        <div id="fade-window" class="window" is-visible="true">
+
         </div>
     </div>
 </body>
+
+<script>
+
+</script>
+<script src="./src/game/PlayableScene.js"></script>
 
 </html>
